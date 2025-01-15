@@ -1,15 +1,20 @@
 import { Image } from "@mui/icons-material";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import CallIcon from "@mui/icons-material/Call";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { sendMessage } from "../../redux/slices/chatSlice";
+import {
+  sendMessage,
+  setSelectedConversation,
+} from "../../redux/slices/chatSlice";
 
 const Right = () => {
   const [message, setMessage] = useState("");
-  const usersChats = useSelector((store) => store?.chats);
+  const usersChats = useSelector((store) => store?.chats?.chat);
+
   const user = useSelector((store) => store?.auth?.user?.data);
   const dispatch = useDispatch();
+  const lastMessageRef = useRef();
 
   const handleSendMessage = () => {
     const reciverId = usersChats?.reciverId;
@@ -21,6 +26,16 @@ const Right = () => {
     dispatch(sendMessage({ reciverId, message }));
     setMessage("");
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      lastMessageRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  }, [usersChats]);
+
+  useEffect(() => {
+    return () => dispatch(setSelectedConversation(null));
+  }, []);
 
   return (
     <Box sx={{ backgroundColor: "#6A80B9", height: "100%", width: "65%" }}>
@@ -59,9 +74,13 @@ const Right = () => {
       <Box
         sx={{ backgroundColor: "#727D73", height: "78%", overflowY: "auto" }}
       >
-        {usersChats?.chat?.map((msg) => (
+        {usersChats?.map((msg) => (
           <Box
             key={msg?._id}
+            ref={lastMessageRef}
+            onClick={() => {
+              selectedConversation(msg?._id);
+            }}
             sx={{
               display: "flex",
               justifyContent: `${user?._id == msg?.senderId ? "end" : "start"}`,

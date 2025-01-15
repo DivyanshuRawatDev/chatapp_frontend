@@ -43,6 +43,7 @@ export const sendMessage = createAsyncThunk(
         { message },
         { withCredentials: true }
       );
+      
 
       return response?.data;
     } catch (error) {
@@ -58,11 +59,17 @@ const chatSlice = createSlice({
     isSuccess: false,
     reciverId: "",
     allUser: [],
+    selectedConversation: [],
     chat: [],
   },
-  reducers: {},
+  reducers: {
+    setSelectedConversation:(state,action)=>{
+      state.selectedConversation=action.payload;
+    }
+  },
   extraReducers: (builder) => {
     // ------------------ fetch all users ----------------------
+
     builder.addCase(fetchAllUsers.pending, (state, action) => {
       state.isLoading = true;
       state.isSuccess = false;
@@ -110,3 +117,4 @@ const chatSlice = createSlice({
 });
 
 export default chatSlice.reducer;
+export const {setSelectedConversation}=chatSlice.actions;

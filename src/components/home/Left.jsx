@@ -6,6 +6,7 @@ import { fetchAllUsers, fetchUsersChats } from "../../redux/slices/chatSlice";
 const Left = () => {
   const dispatch = useDispatch();
   const users = useSelector((store) => store?.chats?.allUser);
+  const selectedConversation=useSelector(store=>store.chats?.selectedConversation)
   useEffect(() => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
@@ -63,7 +64,7 @@ const Left = () => {
                 handleGetChats(user?._id);
               }}
               sx={{
-                backgroundColor: "#F4FFC3",
+                backgroundColor: selectedConversation?"#5DB996":"#118B50",
                 width: "90%",
                 height: "60px",
                 borderRadius: "20px",
